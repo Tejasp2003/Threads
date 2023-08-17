@@ -11,7 +11,7 @@ import { SignedIn, SignOutButton, useAuth  } from "@clerk/clerk-react";
 
 const LeftSidebar = () => {
 
-  const userId = useAuth();
+  const { userId } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   return (
