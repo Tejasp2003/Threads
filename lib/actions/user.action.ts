@@ -170,14 +170,36 @@ export async function getActivity(userId: string) {
       _id: { $in: childThreadIds },
       author: { $ne: userId }, // Exclude threads authored by the same user
     }).populate({
-      path: "author",
+      path: 'author',
       model: User,
-      select: "name image _id",
+      select: 'name image _id',
     });
 
-    return replies;
+    const likes = [];
+    for (const thread of userThreads) {
+      if (thread.likes.length > 0) {
+        const threadLikes = await Thread.findById(thread._id)
+          .select('likes')
+          .populate({
+            path: 'likes',
+            model: User,
+            select: 'name image _id',
+          });
+        likes.push({
+          threadId: thread._id,
+          likes: threadLikes.likes,
+          text: thread.text,
+        });
+      }
+    }
+
+    console.log('likes: ', likes);
+    return {
+      replies,
+      likes,
+    };
   } catch (error) {
-    console.error("Error fetching replies: ", error);
+    console.error('Error fetching activity: ', error);
     throw error;
   }
 }

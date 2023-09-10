@@ -1,6 +1,15 @@
-import { formatDateString } from "@/lib/utils";
+
+
 import Image from "next/image";
 import Link from "next/link";
+
+import { formatDateString } from "@/lib/utils";
+import DeleteThread from "../forms/DeleteThread";
+import { addLikeToThread, isAlreadyLiked } from "@/lib/actions/thread.action";
+import HeartButton from "../shared/HeartButton";
+import { currentUser } from "@clerk/nextjs";
+import { fetchUser } from "@/lib/actions/user.action";
+
 
 interface Props {
   id: string;
@@ -12,12 +21,14 @@ interface Props {
     image: string;
     id: string;
   };
+
   community: {
     id: string;
     name: string;
     image: string;
   } | null;
   createdAt: string;
+ 
   comments: {
     author: {
       image: string;
@@ -26,7 +37,7 @@ interface Props {
   isComment?: boolean;
 }
 
-const ThreadCard = ({
+ async function ThreadCard({
   id,
   currentUserId,
   parentId,
@@ -36,7 +47,15 @@ const ThreadCard = ({
   createdAt,
   comments,
   isComment,
-}: Props) => {
+  
+}: Props) {
+  
+  const user = await currentUser();
+    if(!user) return null;
+
+    const userInfo = await fetchUser(user.id);
+
+
   return (
     <article
       className={`flex w-full flex-col rounded-xl ${
@@ -69,12 +88,9 @@ const ThreadCard = ({
 
             <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
               <div className="flex gap-3.5">
-                <Image
-                  src="/assets/heart-gray.svg"
-                  alt="heart"
-                  width={24}
-                  height={24}
-                  className="cursor-pointer object-contain"
+                <HeartButton 
+                threadId={id.toString()}
+                currentUserId={userInfo._id.toString()}
                 />
                 <Link href={`/thread/${id}`}>
                   <Image
@@ -100,6 +116,7 @@ const ThreadCard = ({
                   className="cursor-pointer object-contain"
                 />
               </div>
+
               {isComment && comments.length > 0 && (
                 <Link href={`/thread/${id}`}>
                   <p className="mt-1 text-subtle-medium text-gray-1">
@@ -110,12 +127,43 @@ const ThreadCard = ({
             </div>
           </div>
         </div>
-        {!isComment && community && (
+
+        <DeleteThread
+          threadId={JSON.stringify(id)}
+          currentUserId={currentUserId}
+          authorId={author.id}
+          parentId={parentId}
+          isComment={isComment}
+        />
+      </div>
+
+      {!isComment && comments.length > 0 && (
+        <div className="ml-1 mt-3 flex items-center gap-2">
+          {comments.slice(0, 2).map((comment, index) => (
+            <Image
+              key={index}
+              src={comment.author.image}
+              alt={`user_${index}`}
+              width={24}
+              height={24}
+              className={`${index !== 0 && "-ml-5"} rounded-full object-cover`}
+            />
+          ))}
+
+          <Link href={`/thread/${id}`}>
+            <p className="mt-1 text-subtle-medium text-gray-1">
+              {comments.length} repl{comments.length > 1 ? "ies" : "y"}
+            </p>
+          </Link>
+        </div>
+      )}
+
+      {!isComment && community && (
         <Link
           href={`/communities/${community.id}`}
-          className='mt-5 flex items-center'
+          className="mt-5 flex items-center"
         >
-          <p className='text-subtle-medium text-gray-1'>
+          <p className="text-subtle-medium text-gray-1">
             {formatDateString(createdAt)}
             {community && ` - ${community.name} Community`}
           </p>
@@ -125,14 +173,12 @@ const ThreadCard = ({
             alt={community.name}
             width={14}
             height={14}
-            className='ml-1 rounded-full object-cover'
+            className="ml-1 rounded-full object-cover"
           />
         </Link>
       )}
-
-      </div>
     </article>
   );
-};
+}
 
 export default ThreadCard;
