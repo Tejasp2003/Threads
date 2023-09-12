@@ -1,5 +1,3 @@
-
-
 import Image from "next/image";
 import Link from "next/link";
 
@@ -9,7 +7,6 @@ import { addLikeToThread, isAlreadyLiked } from "@/lib/actions/thread.action";
 import HeartButton from "../shared/HeartButton";
 import { currentUser } from "@clerk/nextjs";
 import { fetchUser } from "@/lib/actions/user.action";
-
 
 interface Props {
   id: string;
@@ -28,7 +25,7 @@ interface Props {
     image: string;
   } | null;
   createdAt: string;
- 
+
   comments: {
     author: {
       image: string;
@@ -37,7 +34,7 @@ interface Props {
   isComment?: boolean;
 }
 
- async function ThreadCard({
+async function ThreadCard({
   id,
   currentUserId,
   parentId,
@@ -47,19 +44,16 @@ interface Props {
   createdAt,
   comments,
   isComment,
-  
 }: Props) {
-  
   const user = await currentUser();
-    if(!user) return null;
+  if (!user) return null;
 
-    const userInfo = await fetchUser(user.id);
-
+  const userInfo = await fetchUser(user.id);
 
   return (
     <article
       className={`flex w-full flex-col rounded-xl ${
-        isComment ? "px-0 xs:px-7" : "bg-dark-2 p-7"
+        isComment ? "px-0 xs:px-7" : "bg-dark-2 p-[10px]"
       }`}
     >
       <div className="flex items-start justify-between">
@@ -78,19 +72,24 @@ interface Props {
           </div>
 
           <div className="flex w-full flex-col">
-            <Link href={`/profile/${author.id}`} className="w-fit">
-              <h4 className="cursor-pointer text-base-semibold text-light-1">
+            <Link href={`/profile/${author.id}`} className="w-fit mt-1">
+              <h4 className="cursor-pointer text-base-semibold text-light-1 mt-1">
                 {author.name}
               </h4>
             </Link>
 
-            <p className="mt-2 text-small-regular text-light-2">{content}</p>
+            <div
+              className="mt-2 text-small-regular text-light-2"
+              style={{ whiteSpace: "pre-wrap", overflow: "hidden" }}
+            >
+              {content}
+            </div>
 
             <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
               <div className="flex gap-3.5">
-                <HeartButton 
-                threadId={id.toString()}
-                currentUserId={userInfo._id.toString()}
+                <HeartButton
+                  threadId={id.toString()}
+                  currentUserId={userInfo?._id.toString()}
                 />
                 <Link href={`/thread/${id}`}>
                   <Image

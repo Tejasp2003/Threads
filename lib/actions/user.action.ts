@@ -185,9 +185,13 @@ export async function getActivity(userId: string) {
             model: User,
             select: 'name image _id',
           });
+
+        // Filter out the author's ID from the likes array if the author is the same as the user
+        const filteredLikes = threadLikes.likes.filter((like) => like._id.toString() !== userId);
+
         likes.push({
           threadId: thread._id,
-          likes: threadLikes.likes,
+          likes: filteredLikes,
           text: thread.text,
         });
       }
@@ -203,3 +207,4 @@ export async function getActivity(userId: string) {
     throw error;
   }
 }
+

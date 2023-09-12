@@ -37,15 +37,16 @@ async function Page() {
                     key={activity._id}
                     href={`/thread/${activity.parentId}`}
                   >
-                    <article className="activity-card">
+                    <article className="activity-card flex items-start">
                       <Image
                         src={activity.author.image}
                         alt="user_logo"
-                        width={20}
-                        height={20}
-                        className="rounded-full object-cover"
+                        width={25}
+                        height={25}
+                        className="rounded-full cover"
+                        style={{ width: "25px", height: "25px" }}
                       />
-                      <p className="!text-small-regular text-light-1">
+                      <p className="!text-small-regular text-light-1 mt-1aq">
                         <span className="mr-1 text-primary-500">
                           {activity.author.name}
                         </span>{" "}
@@ -64,39 +65,54 @@ async function Page() {
                 key={likeItem.threadId}
                 href={`/thread/${likeItem.threadId}`}
               >
-                <article className="activity-card relative flex items-center">
+                <article className="activity-card relative flex items-start">
                   <div className="ml-1 mt-3 flex items-center gap-2">
-                    {likeItem.likes.slice(0, 2).map((like, index) => (
-                      <Image
+                    {likeItem.likes.slice(0, 2).map((like: any, index: number) => (
+                      <div
                         key={like._id}
-                        src={like.image}
-                        alt={`user_${index}`}
-                        width={25}
-                        height={25}
-                        className={`rounded-full -mt-3 object-cover border-2 border-black  ${
+                        className={`rounded-full overflow-hidden border-2 -mt-4 border-black ${
                           index !== 0 ? "-ml-4" : ""
                         } z-${100 - index}`}
-                      />
+                        style={{ width: "25px", height: "25px" }} // Set a fixed size
+                      >
+                        <Image
+                          src={like.image}
+                          alt={`user_${index}`}
+                          width={25}
+                          height={25}
+                          objectFit="cover" // Maintain aspect ratio and cover the container
+                        />
+                      </div>
                     ))}
                   </div>
-                  <p className="!text-small-regular text-light-1">
-                    {likeItem.likes.length > 0 && (
-                      <span>
-                        {likeItem.likes.map((like, index) => (
-                          <span key={like._id}>
-                            <span className="mr-1 text-primary-500">
-                              {like.name}
+                  <div className="flex-grow">
+                    <p className="!text-small-regular text-light-1">
+                      {likeItem.likes.length > 0 && (
+                        <span>
+                          {likeItem.likes.slice(0, 2).map((like:any, index: number) => (
+                            <span key={like._id}>
+                              <span className="mr-1 text-primary-500">
+                                {like.name}
+                              </span>
+                              {index !== likeItem.likes.length - 1 ? ", " : " "}
                             </span>
-                            {index !== likeItem.likes.length - 1 ? ", " : " "}
+                          ))}
+                          {likeItem.likes.length > 2 && (
+                            <span>
+                              {" and "}
+                              <span className="text-primary-500">
+                                {likeItem.likes.length - 2} others
+                              </span>
+                            </span>
+                          )}
+                          {" liked your thread: "}
+                          <span className="ml-1 text-primary-500">
+                            {likeItem.text}
                           </span>
-                        ))}
-                        liked your thread : 
-                        <span className="ml-1 text-primary-500">
-                          {likeItem.text}
                         </span>
-                      </span>
-                    )}
-                  </p>
+                      )}
+                    </p>
+                  </div>
                 </article>
               </Link>
             ))}

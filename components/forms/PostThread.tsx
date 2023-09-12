@@ -74,6 +74,11 @@ const PostThread = ({ userId }: { userId: string }) => {
                   rows={15}
                   className="no-focus border border-dark-4 bg-dark-3 text-light-1"
                   {...field}
+                  style={{
+                    whiteSpace: "pre-line",
+                    overflowWrap: "break-word", // Add this line to allow text to wrap
+                    wordWrap: "break-word",    // Add this line for additional compatibility
+                  }}
                 />
               </FormControl>
               <FormMessage />
