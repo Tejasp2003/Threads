@@ -48,7 +48,7 @@ const HeartButton = ({ threadId, currentUserId }: HeartButtonProps) => {
       }
     };
     fetchData();
-  }, [threadId, currentUserId]); // Include threadId and currentUserId as dependencies
+  }, []); // Include threadId and currentUserId as dependencies
 
   const heartIconStyles = `
     text-red-500 text-2xl cursor-pointer hover:text-red-600 
