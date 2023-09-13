@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import React, { useEffect, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
@@ -15,8 +15,8 @@ interface HeartButtonProps {
 }
 
 const HeartButton = ({ threadId, currentUserId }: HeartButtonProps) => {
-  const [liked, setLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(0);
+  const [liked, setLiked] = useState<boolean>(false);
+  const [likesCount, setLikesCount] = useState<number>(0);
 
   const fetchLikesCount = async () => {
     const count = await getLikesCount(threadId);
@@ -25,10 +25,10 @@ const HeartButton = ({ threadId, currentUserId }: HeartButtonProps) => {
 
   const toggleLike = async () => {
     try {
-      if (!liked) {
-        await addLikeToThread(threadId, currentUserId);
-      } else {
+      if (liked) {
         await removeLikeFromThread(threadId, currentUserId);
+      } else {
+        await addLikeToThread(threadId, currentUserId);
       }
       fetchLikesCount();
       setLiked(!liked);
@@ -39,13 +39,16 @@ const HeartButton = ({ threadId, currentUserId }: HeartButtonProps) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      await isAlreadyLiked(threadId, currentUserId).then((res) => {
+      try {
+        const res = await isAlreadyLiked(threadId, currentUserId);
         setLiked(res);
-      });
-      fetchLikesCount();
+        fetchLikesCount();
+      } catch (error) {
+        console.log(error);
+      }
     };
     fetchData();
-  }, []);
+  }, []); // Include threadId and currentUserId as dependencies
 
   const heartIconStyles = `
     text-red-500 text-2xl cursor-pointer hover:text-red-600 
@@ -54,13 +57,13 @@ const HeartButton = ({ threadId, currentUserId }: HeartButtonProps) => {
 
   return (
     <div className="flex flex-row justify-center items-center space-x-1">
-      {!liked ? (
-        <AiOutlineHeart className={heartIconStyles} onClick={toggleLike} />
-      ) : (
+      {liked ? (
         <AiFillHeart className={heartIconStyles} onClick={toggleLike} />
+      ) : (
+        <AiOutlineHeart className={heartIconStyles} onClick={toggleLike} />
       )}
 
-      <p className="text-light-1 text-sm font-semibold ">{likesCount}</p>
+      <p className="text-light-1 text-sm font-semibold">{likesCount}</p>
     </div>
   );
 };

@@ -73,17 +73,18 @@ async function ThreadCard({
 
           <div className="flex w-full flex-col">
             <Link href={`/profile/${author.id}`} className="w-fit mt-1">
-              <h4 className="cursor-pointer text-base-semibold text-light-1 mt-1">
+              <h4 className=" text-base-semibold text-light-1 mt-1 cursor-pointer">
                 {author.name}
               </h4>
             </Link>
-
+            <Link href={`/thread/${id}`}>
             <div
               className="mt-2 text-small-regular text-light-2"
               style={{ whiteSpace: "pre-wrap", overflow: "hidden" }}
             >
               {content}
             </div>
+            </Link>
 
             <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
               <div className="flex gap-3.5">
@@ -100,7 +101,7 @@ async function ThreadCard({
                     className="cursor-pointer object-contain"
                   />
                 </Link>
-                <Image
+                {/* <Image
                   src="/assets/repost.svg"
                   alt="heart"
                   width={24}
@@ -113,7 +114,7 @@ async function ThreadCard({
                   width={24}
                   height={24}
                   className="cursor-pointer object-contain"
-                />
+                /> */}
               </div>
 
               {isComment && comments.length > 0 && (

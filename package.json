@@ -23,6 +23,7 @@
     "autoprefixer": "10.4.14",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "lru-cache": "^10.0.1",
     "lucide-react": "^0.263.1",
     "mongoose": "^7.4.2",
     "moongoose": "^0.0.5",

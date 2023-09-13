@@ -187,7 +187,7 @@ export async function getActivity(userId: string) {
           });
 
         // Filter out the author's ID from the likes array if the author is the same as the user
-        const filteredLikes = threadLikes.likes.filter((like) => like._id.toString() !== userId);
+        const filteredLikes = threadLikes.likes.filter((like:any) => like._id.toString() !== userId);
 
         likes.push({
           threadId: thread._id,

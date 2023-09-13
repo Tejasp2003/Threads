@@ -205,21 +205,119 @@ export async function fetchThreadById(threadId: string) {
   }
 }
 
-export async function isAlreadyLiked(
-  threadId: string,
-  userId: string
-) {
-  connectToDB();
+// export async function isAlreadyLiked(
+//   threadId: string,
+//   userId: string
+// ) {
+//   connectToDB();
 
+//   try {
+//     // Find the thread by its ID
+//     const thread =await Thread.findById(threadId);
+
+//     if (!thread) {
+//       throw new Error("Thread not found");
+//     }
+
+//     // Check if the user's ID is in the thread's likes array
+//     return thread.likes.includes(userId);
+//   } catch (err) {
+//     console.error("Error while checking if already liked:", err);
+//     throw new Error("Unable to check if already liked");
+//   }
+// }
+
+// export async function addLikeToThread(
+//   threadId: string,
+//   userId: string,
+ 
+// ) {
+//   connectToDB();
+
+//   try {
+//     // Find the thread by its ID
+//     const thread = await Thread.findById(threadId);
+//     // console.log(thread);
+
+//     if (!thread) {
+//       throw new Error("Thread not found");
+//     }
+
+//     // Add the user's ID to the thread's likes array
+//     thread.likes.push(userId);
+
+//     // Save the updated thread to the database
+//     await thread.save();
+
+//     // revalidatePath(path);
+//     // return the length of the likes array
+//     return thread.likes.length;
+
+//   } catch (err) {
+//     console.error("Error while adding like:", err);
+//     throw new Error("Unable to add like");
+//   }
+// }
+
+// export async function removeLikeFromThread(
+//   threadId: string,
+//   userId: string,
+ 
+// ) {
+//   connectToDB();
+
+//   try {
+//     // Find the thread by its ID
+//     const thread = await Thread.findById(threadId);
+
+//     if (!thread) {
+//       throw new Error("Thread not found");
+//     }
+
+//     // Remove the user's ID from the thread's likes array
+//     thread.likes.pull(userId);
+
+//     // Save the updated thread to the database
+//     await thread.save();
+
+ 
+
+//     // return the length of the likes array
+//     return thread.likes.length;
+
+
+    
+//   } catch (err) {
+//     console.error("Error while removing like:", err);
+//     throw new Error("Unable to remove like");
+//   }
+// }
+
+
+// export async function getLikesCount(threadId: string) {
+//   connectToDB();
+//   try {
+//     // Find the thread by its ID
+//     const thread = await Thread.findById(threadId);
+
+//     if (!thread) {
+//       throw new Error("Thread not found");
+//     }
+
+//     // return the length of the likes array
+//     return thread.likes.length;
+//   }
+//   catch (err) {
+//     console.error("Error while getting likes count:", err);
+//     throw new Error("Unable to get likes count");
+//   }
+// }
+
+
+export async function isAlreadyLiked(threadId: string, userId: string) {
   try {
-    // Find the thread by its ID
-    const thread =await Thread.findById(threadId);
-
-    if (!thread) {
-      throw new Error("Thread not found");
-    }
-
-    // Check if the user's ID is in the thread's likes array
+    const thread = await Thread.findById(threadId);
+    if (!thread) throw new Error("Thread not found");
     return thread.likes.includes(userId);
   } catch (err) {
     console.error("Error while checking if already liked:", err);
@@ -227,94 +325,42 @@ export async function isAlreadyLiked(
   }
 }
 
-export async function addLikeToThread(
-  threadId: string,
-  userId: string,
- 
-) {
-  connectToDB();
-
+export async function addLikeToThread(threadId: string, userId: string) {
   try {
-    // Find the thread by its ID
     const thread = await Thread.findById(threadId);
-    // console.log(thread);
-
-    if (!thread) {
-      throw new Error("Thread not found");
-    }
-
-    // Add the user's ID to the thread's likes array
-    thread.likes.push(userId);
-
-    // Save the updated thread to the database
+    if (!thread) throw new Error("Thread not found");
+    thread.likes.addToSet(userId); // Use addToSet to ensure unique values
     await thread.save();
-
-    // revalidatePath(path);
-    // return the length of the likes array
     return thread.likes.length;
-
   } catch (err) {
     console.error("Error while adding like:", err);
     throw new Error("Unable to add like");
   }
 }
 
-export async function removeLikeFromThread(
-  threadId: string,
-  userId: string,
- 
-) {
-  connectToDB();
-
+export async function removeLikeFromThread(threadId: string, userId: string) {
   try {
-    // Find the thread by its ID
     const thread = await Thread.findById(threadId);
-
-    if (!thread) {
-      throw new Error("Thread not found");
-    }
-
-    // Remove the user's ID from the thread's likes array
+    if (!thread) throw new Error("Thread not found");
     thread.likes.pull(userId);
-
-    // Save the updated thread to the database
     await thread.save();
-
- 
-
-    // return the length of the likes array
     return thread.likes.length;
-
-
-    
   } catch (err) {
     console.error("Error while removing like:", err);
     throw new Error("Unable to remove like");
   }
 }
 
-
 export async function getLikesCount(threadId: string) {
-  connectToDB();
   try {
-    // Find the thread by its ID
     const thread = await Thread.findById(threadId);
-
-    if (!thread) {
-      throw new Error("Thread not found");
-    }
-
-    // return the length of the likes array
+    if (!thread) throw new Error("Thread not found");
     return thread.likes.length;
-  }
-  catch (err) {
+  } catch (err) {
     console.error("Error while getting likes count:", err);
     throw new Error("Unable to get likes count");
   }
 }
-
-
-
 
 
 export async function addCommentToThread(

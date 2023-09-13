@@ -80,6 +80,7 @@ const PostThread = ({ userId }: { userId: string }) => {
                     wordWrap: "break-word",    // Add this line for additional compatibility
                   }}
                 />
+                
               </FormControl>
               <FormMessage />
             </FormItem>
